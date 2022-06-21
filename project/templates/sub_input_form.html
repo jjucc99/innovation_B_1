@@ -3,16 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    {#  bootstrap  #}
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
-    {# jQuery   #}
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200&family=Sunflower:wght@300;500&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+           font-family: 'Noto Serif KR', serif;
+        }
+        .banner{
+            background-color: steelblue;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+        .banner > div{
+            max-width: 600px;
+            width: 95%;
+        }
+        .logo{
+            margin-left: 20px;
+            float: left;
+        }
+        .move_page{
+            float: right;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: right;
+        }
+        .move_page > button{
+            width: 120px;
+            margin: 10px;
+            position: relative;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: end;
+            top: 30px;
+        }
+
+        .wrap {
+
+            width: 600px;
+
+            margin: auto;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-box {
+            width: 600px;
+            margin: 30px auto 30px auto;
+
+            {#border: 2px solid darkgray;#}
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        .input-box > h1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+            background-color: cadetblue;
+            height: 100px;
+            border-radius: 20px;
+        }
+
+        .input-box > h3 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 20px;
+        }
+
+        #input-button {
+            margin: 30px auto 10px auto;
+            width: 100%;
+        }
+
+        .date {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin: 20px auto 20px auto;
+        }
+        #mainkcal:invalid{
+            border: 3px solid red;
+        }
+        #subkcal:invalid{
+            border: 3px solid red;
+        }
+    </style>
+    <script>
+
+        function save_log() {
+            let day = $('#day').val()
+            let time = $('#time').val()
+            let main = $('#maininput').val()
+            let mainkcal = $('#mainkcal').val()
+            let img = $('#img').val()
+            let sub = $('#subinput').val()
+            let subkcal = $('#subkcal').val()
+
+            $.ajax({
+                type: "POST",
+                url: "/diet/input_menu",
+                data: {
+                    day_give: day,
+                    time_give: time,
+                    main_give: main,
+                    mainkcal_give: mainkcal,
+                    img_give: img,
+                    sub_give: sub,
+                    subkcal_give: subkcal
+                },
+                success: function (response) {
+                    alert(response['msg'])
+                    select()
+                }
+            });
+        }
+        
+        function select() {
+            if(!confirm("추가 입력(예) 또는 메인 페이지 이동(아니오)를 선택해주세요.")){
+                alert("메인 페이지 이동(아니오)를 누르셨습니다.")
+                location.href="/"
+            }else{
+                alert("추가 입력(예)을 누르셨습니다. ")
+                window.location.reload()
+            }
+        }
+
+    </script>
 </head>
 <body>
-
+<div class="banner">
+    <div class="logo"><img onclick=location.href="/" src="../static/img/너%20밥은%20먹고%20사냐.png" width="150px"></div>
+    <div></div>
+    <div class="move_page">
+        <button type="button" class="btn btn-dark" onclick=location.href="/">홈으로</button>
+        <button type="button" class="btn btn-dark" onclick=location.href="/diet">상세페이지</button>
+    </div>
+</div>
+<div class="wrap">
+    <div class="input-box" id="breakfast">
+        <h1>식단 기록하기</h1>
+        <div class="date">
+            <select class="form-select" id="day" aria-label="Default select example">
+                <option selected>요일</option>
+                <option value="0">일요일</option>
+                <option value="1">월요일</option>
+                <option value="2">화요일</option>
+                <option value="3">수요일</option>
+                <option value="4">목요일</option>
+                <option value="5">금요일</option>
+                <option value="6">토요일</option>
+            </select>
+            <select class="form-select" id="time" aria-label="Default select example">
+                <option selected>식사 시간</option>
+                <option value="0">아침</option>
+                <option value="1">점심</option>
+                <option value="2">저녁</option>
+            </select>
+        </div>
+        <div>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="maininput" placeholder="main_menu">
+                <label for="floatingInput">주메뉴</label>
+            </div>
+            <div class="input-group mb-3">
+                <input type="number" class="form-control" style="text-align: right" id="mainkcal" pattern="[0-9]+">
+                <span class="input-group-text">kcal</span>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">메뉴 사진 URL</span>
+                </div>
+                <input type="text" class="form-control" id="img" aria-describedby="basic-addon3">
+            </div>
+        </div>
+        <div>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="subinput" placeholder="sub_menu">
+                <label for="floatingInput">서브메뉴</label>
+            </div>
+            <div class="input-group mb-3">
+                <input type="number" class="form-control" style="text-align: right" id="subkcal" pattern="[0-9]+">
+                <span class="input-group-text">kcal</span>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-lg" id="input-button" onclick="save_log()"> 입력 하기</button>
+    </div>
+</div>
 </body>
 </html>
