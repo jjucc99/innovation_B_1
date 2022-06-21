@@ -43,8 +43,6 @@ days = [[{"day": 0,
           "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"}
          ]
         ]
-
-big = []
 diet = []
 total = 0
 one = None
