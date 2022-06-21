@@ -3,15 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    {#  bootstrap  #}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-    {# jQuery   #}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="../static/css/style.css" , rel="stylesheet">
 </head>
 <body>
+    <header>
+        <a href="">
+            <div class="header_logo">
+                <img src="../static/img/main.png">
+            </div>
+        </a>
+        <div class="header_title">
+            <div>{{ year }}년 {{ month }}월 4주차 식단</div>
+        </div>
+        <div class="header_btn">
+            <a href="">
+                <div class="header_btn_btn">
+                    <span>+</span>
+                </div>
+            </a>
+        </div>
+    </header>
+    {% for food in diet %}
+        <a href="/diet/{{ food['day'] }}">
+            <section>
+                <div class="section_main">
+                    {% if food["day"] == 0 %}
+                        <div class="section_main_day">일요일</div>
+                    {% elif food["day"] == 1 %}
+                        <div class="section_main_day">월요일</div>
+                    {% elif food["day"] == 2 %}
+                        <div class="section_main_day">화요일</div>
+                    {% elif food["day"] == 3 %}
+                        <div class="section_main_day">수요일</div>
+                    {% elif food["day"] == 4 %}
+                        <div class="section_main_day">목요일</div>
+                    {% elif food["day"] == 5 %}
+                        <div class="section_main_day">금요일</div>
+                    {% elif food["day"] == 6 %}
+                        <div class="section_main_day">토요일</div>
+                    {% endif %}
+                    <div class="section_main_img">
+                        <img src={{ food["img"] }}>
+                    </div>
+                </div>
+                <div class="section_kcal">
+                    <div class="section_kcal_total">총 칼로리 {{ food["mainkcal"] + food["subkcal"] }} kcal</div>
+                    <div class="section_kcal_main_menu">메인 메뉴 {{ food["main"] }}</div>
+                    <div class="section_kcal_main">{{ food["mainkcal"] }} kcal</div>
+                    <div class="section_kcal_sub_menu">서브 메뉴 {{ food["sub"] }}</div>
+                    <div class="section_kcal_sub">{{ food["subkcal"] }} kcal</div>
+                </div>
+            </section>
+        </a>
+    {% endfor %}
 </body>
 </html>
