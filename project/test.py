@@ -1,58 +1,45 @@
-days = [[{"day": 0,
-          "time": 1,
-          "main": "우동",
-          "mainkcal": 2000,
-          "sub": "김치",
-          "subkcal": 500,
-          "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-         {"day": 0,
-          "tme": 0,
-          "main": "라면",
-          "mainkcal": 1500,
-          "sub": "김치",
-          "subkcal": 500,
-          "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-         {"day": 0,
-          "tme": 2,
-          "main": "짜장면",
-          "mainkcal": 900,
-          "sub": "김치",
-          "subkcal": 500,
-          "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"}
-         ],
-        [{"day": 1,
-          "time": 0,
-          "main": "라면",
-          "mainkcal": 1500,
-          "sub": "김치",
-          "subkcal": 500,
-          "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-         {"day": 1,
-          "time": 1,
-          "main": "우동",
-          "mainkcal": 2000,
-          "sub": "김치",
-          "subkcal": 500,
-          "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-         {"day": 1,
-          "time": 2,
-          "main": "짜장면",
-          "mainkcal": 900,
-          "sub": "김치",
-          "subkcal": 500,
-          "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"}
-         ]
-        ]
+# from flask import *
+import requests
+from datetime import datetime
+from pymongo import MongoClient
+
+#pymongo
+# client = MongoClient('mongodb+srv://test:sparta@cluster0.yqzgz.mongodb.net/?retryWrites=true&w=majority')
+# db = client.dbsparta
+client = MongoClient('mongodb+srv://test:sparta@cluster0.fchsu.mongodb.net/Cluster0?retryWrites=true&w=majority')
+db = client.dbsparta
+
+#flask
+# app = Flask(__name__)
+
+
+week = []
+
+i = 0
+while i <= 6:
+    users = list(db.prac.find({'day': str(i)}, {'_id': False}))
+    if len(users) != 0:
+        week.append(users)
+    i = i + 1
+
 diet = []
 total = 0
-one = None
 
-for day in days:
-    for someday in day:
-        someday_kcal = someday['mainkcal'] + someday['subkcal']
-        if someday_kcal > total:
-            total = someday_kcal
-            one = someday
-    total = 0
-    diet.append(one)
-    print(diet)
+users = list(db.prac.find({'day': '0'}, {'_id': False}))
+print(users)
+# list = None
+# j = 0
+
+
+# for day in week:
+#     while j < len(day):
+#         if int(day[j]['mainkcal']) + int(day[j]['subkcal']) > total:
+#             total = int(day[j]['mainkcal']) + int(day[j]['subkcal'])
+#             list = day[j]
+#         j = j+1
+#     j = 0
+#     total = 0
+#     if list is not None:
+#         diet.append(list)
+#     list = None
+# 

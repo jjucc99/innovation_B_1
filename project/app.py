@@ -16,73 +16,52 @@ app = Flask(__name__)
 def main():
     year = datetime.today().year
     month = datetime.today().month
-    days = [[{"day": 0,
-              "time": 1,
-              "main": "우동",
-              "mainkcal": 2000,
-              "sub": "김치",
-              "subkcal": 500,
-              "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-             {"day": 0,
-              "tme": 0,
-              "main": "라면",
-              "mainkcal": 1500,
-              "sub": "김치",
-              "subkcal": 500,
-              "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-             {"day": 0,
-              "tme": 2,
-              "main": "짜장면",
-              "mainkcal": 900,
-              "sub": "김치",
-              "subkcal": 500,
-              "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"}
-             ],
-            [{"day": 1,
-              "time": 0,
-              "main": "라면",
-              "mainkcal": 1500,
-              "sub": "김치",
-              "subkcal": 500,
-              "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-             {"day": 1,
-              "time": 1,
-              "main": "우동",
-              "mainkcal": 2000,
-              "sub": "김치",
-              "subkcal": 500,
-              "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"},
-             {"day": 1,
-              "time": 2,
-              "main": "짜장면",
-              "mainkcal": 900,
-              "sub": "김치",
-              "subkcal": 500,
-              "img": "https://file.mk.co.kr/meet/neds/2017/09/image_readtop_2017_587233_15042337473013492.jpg"}
-             ]
-            ]
+    week = []
+
+    i = 0
+    while i <= 6:
+        users = list(db.prac.find({'day': str(i)}, {'_id': False}))
+        if len(users) != 0:
+            week.append(users)
+        i = i + 1
+
     diet = []
     total = 0
-    for day in days:
-        for someday in day:
-            someday_kcal = someday['mainkcal'] + someday['subkcal']
-            if someday_kcal > total:
-                total = someday_kcal
-                one = someday
+
+    list_menu = None
+    j = 0
+
+    for day in week:
+        while j < len(day):
+            if int(day[j]['mainkcal']) + int(day[j]['subkcal']) > total:
+                total = int(day[j]['mainkcal']) + int(day[j]['subkcal'])
+                list_menu = day[j]
+            j = j + 1
+        j = 0
         total = 0
-        diet.append(one)
+        if list is not None:
+            diet.append(list_menu)
+        list_menu = None
+
     return render_template("index.html", diet=diet, year=year, month=month)
 
-@app.route('/diet')
-def detail():
-    return render_template("sub.html")
+@app.route('/diet/<day>')
+def detail(day):
+    # print(day)
+    year = datetime.today().year
+    month = datetime.today().month
+    users = list(db.prac.find({'day': str(day)}, {'_id': False}))
+    return render_template("sub.html", month=month, year=year, user=users)
+
+@app.route('/')
+def home():
+    return render_template("index.html")
 
 @app.route('/diet/input')
 def input_page():
     return render_template("sub_input_form.html")
 
 @app.route('/diet/input_menu', methods=["POST"])
-
 def input_menu():
     day_receive = request.form['day_give']
     time_receive = request.form['time_give']
@@ -113,6 +92,27 @@ def input_menu():
 
     db.prac.insert_one(doc)
     return jsonify({'msg': '입력완료'})
+
+@app.route("/sub/comment", methods=["POST"])
+def sub_post():
+    time_receive = request.form['times_give']
+    day_receive = request.form['date_give']
+    comment_receive = request.form['comment_give']
+
+    doc = {
+        'time' : time_receive,
+        'day' : day_receive,
+        'comment' : comment_receive
+    }
+
+    db.subcomment.insert_one(doc)
+    return jsonify({'msg':'저장 완료!'})
+
+@app.route("/sub/comment/<day>/<time>", methods=["GET"])
+def get_comment(day,time):
+    users = list(db.subcomment.find({'day':day,'time':time}, {'_id': False}))
+    # print(day+time)
+    return jsonify({'users':users})
 
 
 if __name__ == '__main__':
