@@ -73,8 +73,9 @@ def main():
         diet.append(one)
     return render_template("index.html", diet=diet, year=year, month=month)
 
-@app.route('/diet')
-def detail():
+@app.route('/diet/<day>')
+def detail(day):
+    print(day)
     return render_template("sub.html")
 
 @app.route('/diet/input')
