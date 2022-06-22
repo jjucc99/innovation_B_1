@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <a href="">
+        <a href="/">
             <div class="header_logo">
                 <img src="../static/img/main.png">
             </div>
@@ -27,19 +27,19 @@
         <a href="/diet/{{ food['day'] }}">
             <section>
                 <div class="section_main">
-                    {% if food["day"] == 0 %}
+                    {% if food["day"] == "0" %}
                         <div class="section_main_day">일요일</div>
-                    {% elif food["day"] == 1 %}
+                    {% elif food["day"] == "1" %}
                         <div class="section_main_day">월요일</div>
-                    {% elif food["day"] == 2 %}
+                    {% elif food["day"] == "2" %}
                         <div class="section_main_day">화요일</div>
-                    {% elif food["day"] == 3 %}
+                    {% elif food["day"] == "3" %}
                         <div class="section_main_day">수요일</div>
-                    {% elif food["day"] == 4 %}
+                    {% elif food["day"] == "4" %}
                         <div class="section_main_day">목요일</div>
-                    {% elif food["day"] == 5 %}
+                    {% elif food["day"] == "5" %}
                         <div class="section_main_day">금요일</div>
-                    {% elif food["day"] == 6 %}
+                    {% elif food["day"] == "6" %}
                         <div class="section_main_day">토요일</div>
                     {% endif %}
                     <div class="section_main_img">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="section_kcal">
-                    <div class="section_kcal_total">총 칼로리 {{ food["mainkcal"] + food["subkcal"] }} kcal</div>
+                    <div class="section_kcal_total">총 칼로리 {{ food["mainkcal"]|int + food["subkcal"]|int }} kcal</div>
                     <div class="section_kcal_main_menu">메인 메뉴 {{ food["main"] }}</div>
                     <div class="section_kcal_main">{{ food["mainkcal"] }} kcal</div>
                     <div class="section_kcal_sub_menu">서브 메뉴 {{ food["sub"] }}</div>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <!--bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="../static/css/style.css" , rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200&family=Sunflower:wght@300;500&display=swap" rel="stylesheet">
+
+    <script>
+
+        function save_comment(day, time) {
+            let date = day
+            let times = time
+            let comment = $(`#comment_${day}_${time}`).val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/sub/comment',
+                data: { comment_give : comment, date_give:date, times_give : times},
+                success: function (response) {
+                    alert(response['msg'])
+                    {#window.location.reload()#}
+
+                }
+            })
+        }
+        function get_comment(day, time) {
+            $(`#comment_box_${day}_${time}`).empty()
+            $.ajax({
+                type: 'GET',
+                url: `/sub/comment/${day}/${time}`,
+                data: {},
+                success: function (response) {
+
+                    let rows = response['users']
+
+                    if(rows.length == 0){
+                        alert("값을 입력해주세요")
+                    }else{
+                        for (const row of rows) {
+                            let comment = row['comment']
+                            let temp_html = `<li>${comment}</li>`
+
+                                    $(`#comment_box_${day}_${time}`).append(temp_html)
+
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<header>
+    <a href="/">
+        <div class="header_logo">
+            <img src="../static/img/main.png">
+        </div>
+    </a>
+    <div class="header_title">
+        <div>{{ year }}년 {{ month }}월 4주차 식단</div>
+    </div>
+    <div class="header_btn">
+        <a href="/diet/input">
+            <div class="header_btn_btn">
+                <span>+</span>
+            </div>
+        </a>
+    </div>
+</header>
+<div class="mycards">
+    <div class="row row-cols-1 row-cols-md-3 g-3" id="cards-box">
+        {% for info in user %}
+            <div class="col">
+                <div class="food">
+                    {% if info["time"] == "0" %}
+                        <h4 class="time">아침</h4>
+                    {% elif info["time"] == "1" %}
+                        <h4 class="time">점심</h4>
+                    {% elif info["time"] == "2" %}
+                        <h4 class="time">저녁</h4>
+                    {% endif %}
+                    <img class="image" src={{ info["img"] }}>
+                    <div class="card-body">
+                        <p>메인 메뉴 : <span id="main_menu">{{ info["main"] }}</span></p>
+                        <p>메인 칼로리 : <span id="main_kcal">{{ info["mainkcal"] }}</span></p>
+                        <p>서브 메뉴 : <span id="sub_menu">{{ info["sub"] }}</span></p>
+                        <p>서브 칼로리 : <span id="sub_kcal">{{ info["subkcal"] }}</span></p>
+                    </div>
+                    <div class="mypost">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Leave a comment here" id="comment_{{info["day"]}}_{{info["time"]}}"
+                                  style="height: 60px"></textarea>
+                            <label for="floatingTextarea2" id="comment-text" >입력해주세요</label>
+                            <button onclick="save_comment({{info["day"]}}, {{info["time"]}})" type="button" class="btn btn-dark" style="height: 60px">입력</button>
+                            <button onclick="get_comment({{info["day"]}}, {{info["time"]}})"style="height: 60px" type="button" class="btn btn-outline-dark">확인</button>
+                        </div>
+                    </div>
+                    <div class="mycards" id="comment-list">
+                        <ul id="comment_box_{{info["day"]}}_{{info["time"]}}">
+
+                        </ul>
+                    </div>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
